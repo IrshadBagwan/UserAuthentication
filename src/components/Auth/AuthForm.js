@@ -17,40 +17,50 @@ const AuthForm = () => {
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
-    console.log(enteredPassword)
-    console.log(enteredEmail)
+    console.log(enteredPassword);
+    console.log(enteredEmail);
 
     // Add validation
     setisLoading(true);
+    let url;
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBBDf5Cpqha_CEBGP2carWWDjC9QIGa4jE";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBBDf5Cpqha_CEBGP2carWWDjC9QIGa4jE",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          }
-        }
-      ).then(async (res) => {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBBDf5Cpqha_CEBGP2carWWDjC9QIGa4jE";
+    }
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (res) => {
         setisLoading(false);
         if (res.ok) {
+          return res.json();
         } else {
           const data = await res.json();
-          let errorMessage = 'Authentication Failed!';
-          if(data && data.error && data.error.message){
-            errorMessage = data.error.message;
-          }
-          alert(errorMessage);
-          console.log(data);
+          let errorMessage = "Authentication Failed!";
+          // if(data && data.error && data.error.message){
+          //   errorMessage = data.error.message;
+          // }
+
+          throw new Error(errorMessage);
         }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        alert(err.message);
       });
-    }
   };
 
   return (
@@ -71,7 +81,9 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-          {!isLoading && <button>{isLogin ? "Login" : "Create Account"}</button>}
+          {!isLoading && (
+            <button>{isLogin ? "Login" : "Create Account"}</button>
+          )}
           {isLoading && <p>Loading......</p>}
           <button
             type="button"
