@@ -11,6 +11,7 @@ const MainNavigation = () => {
 
   const logoutHandler = () =>{
      authCtx.logout();
+     
   }
 
   const isLoggedIn = authCtx.isLoggedIn;

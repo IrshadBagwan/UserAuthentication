@@ -5,6 +5,7 @@ const AuthContext = React.createContext({
   isLoggedIn: false,
   login: (token) => {},
   logout: () => {},
+  autologout:()=>{}
 });
 
 export const AuthContextProvider = (props) => {
@@ -25,11 +26,20 @@ export const AuthContextProvider = (props) => {
     localStorage.removeItem('token');
   };
 
+  const autologoutHandler = () =>{
+    setTimeout(() => {
+     
+      logoutHandler();
+      
+    }, 50000);
+  }
+
   const contextValue = {
     token: token,
     isLoggedIn: userIsLoggedIn,
     login: loginHandler,
     logout: logoutHandler,
+    autologout: autologoutHandler
   };
 
   return (

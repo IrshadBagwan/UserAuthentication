@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import AuthContext from "../Store/auth-context";
 
 import classes from "./AuthForm.module.css";
@@ -11,6 +11,13 @@ const AuthForm = () => {
 
   const authctx = useContext(AuthContext);
 
+ 
+    
+  
+
+    
+   
+
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
   };
@@ -22,6 +29,8 @@ const AuthForm = () => {
     const enteredPassword = passwordInputRef.current.value;
     console.log(enteredPassword);
     console.log(enteredEmail);
+
+   
 
     // Add validation
     setisLoading(true);
@@ -45,12 +54,19 @@ const AuthForm = () => {
       },
     })
       .then(async (res) => {
+        
         setisLoading(false);
+       
         if (res.ok) {
           return res.json();
+        
+         
+          
+          
         } else {
           const data = await res.json();
           let errorMessage = "Authentication Failed!";
+          
           // if(data && data.error && data.error.message){
           //   errorMessage = data.error.message;
           // }
@@ -60,6 +76,7 @@ const AuthForm = () => {
       })
       .then((data) => {
         authctx.login(data.idToken);
+        authctx.autologout();
       })
       .catch((err) => {
         alert(err.message);
